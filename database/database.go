@@ -2,6 +2,7 @@ package database
 
 import (
 	"context"
+	"fmt"
 	"log"
 	"time"
 
@@ -10,7 +11,9 @@ import (
 )
 
 func OpenDbConnection() (*pgxpool.Pool, error) {
-	cfg, err := pgxpool.ParseConfig(config.DbPort)
+	psqlconn := fmt.Sprintf("host=%s port=%s user=%s password=%s dbname=%s sslmode=require", config.DbHost, config.DbPort, config.DbUser, config.DbPassword, config.DbName)
+
+	cfg, err := pgxpool.ParseConfig(psqlconn)
 	if err != nil {
 		return nil, err
 	}
