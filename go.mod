@@ -3,10 +3,7 @@ module github.com/izzxx/Go-Restful-Api
 // +heroku goVersion go1.18
 go 1.18
 
-require (
-	github.com/jackc/pgx/v4 v4.16.1
-	github.com/joho/godotenv v1.4.0
-)
+require github.com/jackc/pgx/v4 v4.16.1
 
 require (
 	github.com/labstack/gommon v0.3.1 // indirect

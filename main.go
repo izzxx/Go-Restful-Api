@@ -6,13 +6,12 @@ import (
 	"net/http"
 	"time"
 
+	"github.com/allegro/bigcache/v3"
 	"github.com/izzxx/Go-Restful-Api/config"
 	"github.com/izzxx/Go-Restful-Api/database"
 	internal "github.com/izzxx/Go-Restful-Api/middleware"
 	"github.com/izzxx/Go-Restful-Api/routes"
-	"github.com/allegro/bigcache/v3"
 
-	_ "github.com/joho/godotenv/autoload"
 	"github.com/labstack/echo/v4"
 	"github.com/labstack/echo/v4/middleware"
 )
@@ -48,7 +47,7 @@ func main() {
 	timeout := 15 * time.Second
 
 	server := &http.Server{
-		Addr:         config.ServerPort,
+		Addr:         ":9000",
 		ReadTimeout:  timeout,
 		WriteTimeout: timeout,
 	}
