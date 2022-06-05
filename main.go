@@ -44,7 +44,7 @@ func main() {
 	e.Use(middleware.CORS())
 	e.Use(internal.Limiter())
 
-	timeout := 15 * time.Second
+	timeout := time.Minute
 
 	server := &http.Server{
 		Addr:         ":9000",
