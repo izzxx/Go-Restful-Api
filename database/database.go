@@ -33,6 +33,7 @@ func OpenDbConnection() (*pgxpool.Pool, error) {
 	return pool, nil
 }
 
+// Migrate
 func Create(ctx context.Context) {
 	db, err := OpenDbConnection()
 	if err != nil {
