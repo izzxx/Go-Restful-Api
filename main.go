@@ -20,17 +20,18 @@ func main() {
 	// Variable setup
 	config.InitConfig()
 
-	ctx, cancel := context.WithDeadline(context.Background(), time.Now().Add(2*time.Minute))
+	_, cancel := context.WithDeadline(context.Background(), time.Now().Add(2*time.Minute))
 	defer cancel()
 
 	// Manual Database migration
-	database.Create(ctx)
+	// database.Create(ctx)
 
 	// Postgres
 	pgxpool, err := database.OpenDbConnection()
 	if err != nil {
 		log.Fatal(err.Error())
 	}
+	defer pgxpool.Close()
 
 	// BigCache
 	memory, err := bigcache.NewBigCache(bigcache.DefaultConfig(5 * time.Hour))
