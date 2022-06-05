@@ -47,7 +47,6 @@ func main() {
 	timeout := time.Minute
 
 	server := &http.Server{
-		Addr:         ":9000",
 		ReadTimeout:  timeout,
 		WriteTimeout: timeout,
 	}
