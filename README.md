@@ -9,6 +9,8 @@ Read the instructions below to register, then you can use it.
 The token will always be used on every request to the url, save the token in the header. <br />`Authorization: Bearer <token>`
 
 #### Register
+* POST ```https://firstproductapi.herokuapp.com/api/v1/users/register```
+
 ```json
 {
     "username": "useraname",
@@ -18,6 +20,8 @@ The token will always be used on every request to the url, save the token in the
 ```
 
 #### Login
+* POST ```https://firstproductapi.herokuapp.com/api/v1/users/login```
+
 ```json
 {
     "email": "email@gmail.com",
@@ -40,20 +44,14 @@ The token will always be used on every request to the url, save the token in the
 
 ## Products
 
-
 ### User
 The access you get when you are registered as a user.
 
 ###### Get All Products
-```
-http://localhost:9000/api/v1/products
-```
-
+* GET ```https://firstproductapi.herokuapp.com/api/v1/products```
 
 ###### Get Product By Id
-```
-http://localhost:9000/api/v1/products/{id}
-```
+* GET ```https://firstproductapi.herokuapp.com/api/v1/products/{id}```
 
 ```json
 {
@@ -74,9 +72,9 @@ Only admins can access this page to make data changes
 
 | Method | Url |
 | --- | --- |
-| POST | `http://localhost:9000/api/v1/admin/products` |
-| PUT | `http://localhost:9000/api/v1/admin/products/{id}`|
-| DELETE | `http://localhost:9000/api/v1/admin/products/{id}`|
+| POST | `https://firstproductapi.herokuapp.com/api/v1/products/admin/create` |
+| PUT | `https://firstproductapi.herokuapp.com/api/v1/products/admin/update/{id}`|
+| DELETE | `https://firstproductapi.herokuapp.com/api/v1/products/admin/delete/{id}`|
 
 ## Closing 
 
