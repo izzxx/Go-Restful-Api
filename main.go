@@ -12,6 +12,7 @@ import (
 	internal "github.com/izzxx/Go-Restful-Api/middleware"
 	"github.com/izzxx/Go-Restful-Api/routes"
 
+	_ "github.com/joho/godotenv/autoload"
 	"github.com/labstack/echo/v4"
 	"github.com/labstack/echo/v4/middleware"
 )
@@ -20,11 +21,11 @@ func main() {
 	// Variable setup
 	config.InitConfig()
 
-	_, cancel := context.WithDeadline(context.Background(), time.Now().Add(2*time.Minute))
+	ctx, cancel := context.WithDeadline(context.Background(), time.Now().Add(2*time.Minute))
 	defer cancel()
 
 	// Manual Database migration
-	// database.Create(ctx)
+	database.Create(ctx)
 
 	// Postgres
 	pgxpool, err := database.OpenDbConnection()
@@ -48,6 +49,7 @@ func main() {
 	timeout := time.Minute
 
 	server := &http.Server{
+		Addr:         ":" + config.ServerPort,
 		ReadTimeout:  timeout,
 		WriteTimeout: timeout,
 	}
