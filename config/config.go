@@ -14,7 +14,7 @@ var (
 
 func InitConfig() {
 	JwtSecretkey = os.Getenv("JWT_KEY")
-	ServerPort = os.Getenv("SERVER_PORT")
+	ServerPort = os.Getenv("PORT")
 	DbHost = os.Getenv("DB_HOST")
 	DbPort = os.Getenv("DB_PORT")
 	DbName = os.Getenv("DB_NAME")
