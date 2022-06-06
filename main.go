@@ -66,5 +66,6 @@ func main() {
 	route.User()
 	route.Product()
 
+	log.Println("server running at:", server.Addr)
 	e.Logger.Fatal(e.StartServer(server))
 }
