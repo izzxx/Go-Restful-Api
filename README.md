@@ -44,7 +44,6 @@ The token will always be used on every request to the url, save the token in the
 
 ## Products
 
-
 ### User
 The access you get when you are registered as a user.
 
