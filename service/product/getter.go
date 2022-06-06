@@ -18,7 +18,15 @@ func (ps *ProductService) GetProductIdFromDb(ctx context.Context, id string) (*P
 		return nil, err
 	}
 
-	return (*ProductResponse)(product), nil
+	response := ProductResponse{
+		Id:         product.Id,
+		Name:       product.Name,
+		Price:      product.Price,
+		Quantity:   product.Quantity,
+		Created_At: product.Created_At,
+	}
+
+	return &response, nil
 }
 
 func (ps *ProductService) GetAllProductsFromDb(ctx context.Context) ([]ProductResponse, error) {

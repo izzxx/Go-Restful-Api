@@ -35,7 +35,7 @@ func (ps *ProductService) StoreProduct(ctx context.Context, prod StoreProduct) (
 	}
 
 	// delete cache product
-	ps.DeleteProductFromCache()
+	_ = ps.Memory.Delete("products")
 
 	return (*ProductResponse)(&productModel), nil
 }
@@ -65,7 +65,7 @@ func (ps *ProductService) UpdateProduct(ctx context.Context, prod UpdateProduct)
 	}
 
 	// delete cache product
-	ps.DeleteProductFromCache()
+	_ = ps.Memory.Delete("products")
 
 	return nil
 }
@@ -80,18 +80,17 @@ func (ps *ProductService) DeleteProductById(ctx context.Context, id string) erro
 		return err
 	}
 
-	ps.DeleteProductFromCache()
-
+	_ = ps.Memory.Delete("products")
 	return nil
 }
 
 // Set cache in memory
-func (ps *ProductService) SetCacheProducts(products interface{}) error {
+func (ps *ProductService) SetCacheProducts(products []ProductResponse) error {
 	if products == nil {
 		return errors.New("products not found")
 	}
 
-	cacheProducts, err := ffjson.Marshal(products.([]ProductResponse))
+	cacheProducts, err := ffjson.Marshal(products)
 	if err != nil {
 		return err
 	}
@@ -101,10 +100,4 @@ func (ps *ProductService) SetCacheProducts(products interface{}) error {
 	}
 
 	return nil
-}
-
-func (ps *ProductService) DeleteProductFromCache() {
-	// i didn't receive the error on purpose
-	// so that when the products cache doesn't exist, the error will not appear, and the program will continue to run
-	ps.Memory.Delete("products")
 }
