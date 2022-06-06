@@ -44,6 +44,7 @@ func main() {
 
 	e.Use(middleware.CORS())
 	e.Use(internal.Limiter())
+	e.Use(middleware.Logger())
 	e.Use(middleware.Recover())
 
 	timeout := 15 * time.Second
