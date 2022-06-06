@@ -13,6 +13,7 @@ func (deps *Dependencies) Product() {
 	productHandler := handler.ProductHandler{ProductService: productService}
 
 	// Must be registered as a user
+	deps.App.GET("/rahasia", productHandler.GetAllProducts)
 	productForUser := deps.App.Group("/api/v1", middleware.AuthMiddleware)
 	productForUser.GET("/products", productHandler.GetAllProducts)
 	productForUser.GET("/products/:id", productHandler.GetProductById)

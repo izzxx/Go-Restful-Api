@@ -46,7 +46,7 @@ func main() {
 	e.Use(middleware.CORS())
 	e.Use(internal.Limiter())
 
-	timeout := time.Minute
+	timeout := 20 * time.Second
 
 	server := &http.Server{
 		Addr:         ":" + config.ServerPort,
@@ -66,6 +66,5 @@ func main() {
 	route.User()
 	route.Product()
 
-	log.Println("server running at:", server.Addr)
 	e.Logger.Fatal(e.StartServer(server))
 }
