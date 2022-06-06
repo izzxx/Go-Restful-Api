@@ -42,11 +42,11 @@ func main() {
 
 	e := echo.New()
 
-	e.Use(middleware.Recover())
 	e.Use(middleware.CORS())
 	e.Use(internal.Limiter())
+	e.Use(middleware.Recover())
 
-	timeout := 20 * time.Second
+	timeout := 15 * time.Second
 
 	server := &http.Server{
 		Addr:         ":" + config.ServerPort,
@@ -62,9 +62,9 @@ func main() {
 	}
 
 	// Route
-	route.Health()
 	route.User()
 	route.Product()
+	route.Health()
 
 	e.Logger.Fatal(e.StartServer(server))
 }

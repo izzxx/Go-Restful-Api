@@ -11,6 +11,7 @@ func (ud *Dependencies) User() {
 	userService := service.UserService{UserRepository: userModels}
 	userHandler := handler.UserHandler{UserService: userService}
 
-	ud.App.POST("/api/v1/users/register", userHandler.Register)
-	ud.App.POST("/api/v1/users/login", userHandler.Login)
+	users := ud.App.Group("/api/v1/users")
+	users.POST("/register", userHandler.Register)
+	users.POST("/login", userHandler.Login)
 }
