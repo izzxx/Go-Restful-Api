@@ -1,1 +1,1 @@
-web: Go-Restful-Api
+web: npm run start
