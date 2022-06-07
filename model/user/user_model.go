@@ -40,11 +40,14 @@ func (ur *UserRepository) CreateUser(ctx context.Context, user User) (string, er
 	defer tx.Rollback(ctx)
 
 	query := `INSERT INTO users(id, name, email, password, isadmin) VALUES($1, $2, $3, $4, $5) RETURNING id`
-	if err = tx.QueryRow(ctx, query, user.Id, user.Name, user.Email, user.Password, user.IsAdmin).Scan(&user.Id); err != nil {
+
+	err = tx.QueryRow(ctx, query, user.Id, user.Name, user.Email, user.Password, user.IsAdmin).Scan(&user.Id)
+	if err != nil {
 		return "", err
 	}
 
-	if err = tx.Commit(ctx); err != nil {
+	err = tx.Commit(ctx)
+	if err != nil {
 		return "", err
 	}
 
@@ -67,18 +70,21 @@ func (ur *UserRepository) GetUserByEmail(ctx context.Context, email string) (*Us
 	var usr User
 
 	query := `SELECT id, name, email, password, isadmin FROM users WHERE email = $1`
-	if err = tx.QueryRow(ctx, query, email).Scan(&usr.Id, &usr.Name, &usr.Email, &usr.Password, &usr.IsAdmin); err != nil {
+
+	err = tx.QueryRow(ctx, query, email).Scan(&usr.Id, &usr.Name, &usr.Email, &usr.Password, &usr.IsAdmin)
+	if err != nil {
 		return nil, err
 	}
 
-	if err = tx.Commit(ctx); err != nil {
+	err = tx.Commit(ctx)
+	if err != nil {
 		return nil, err
 	}
 
 	return &usr, nil
 }
 
-func (ur *UserRepository) UpdatePasswordUser(ctx context.Context, email, pastPassword, newPassword string) error {
+func (ur *UserRepository) UpdatePasswordUser(ctx context.Context, email, newPassword string) error {
 	coon, err := ur.Db.Acquire(ctx)
 	if err != nil {
 		return err
@@ -91,12 +97,15 @@ func (ur *UserRepository) UpdatePasswordUser(ctx context.Context, email, pastPas
 	}
 	defer tx.Rollback(ctx)
 
-	query := `UPDATE users SET password = $1 WHERE email = $2 AND password = $3`
-	if ct, err := tx.Exec(ctx, query, newPassword, email, pastPassword); err != nil || ct.RowsAffected() == 0 {
+	query := `UPDATE users SET password = $1 WHERE email = $2`
+
+	ct, err := tx.Exec(ctx, query, newPassword, email)
+	if err != nil || ct.RowsAffected() == 0 {
 		return errors.New("failed to update user")
 	}
 
-	if err = tx.Commit(ctx); err != nil {
+	err = tx.Commit(ctx)
+	if err != nil {
 		return err
 	}
 
@@ -117,11 +126,14 @@ func (ur *UserRepository) DeleteUser(ctx context.Context, email string) error {
 	defer tx.Rollback(ctx)
 
 	query := `DELETE FROM users WHERE email = $1`
-	if ct, err := tx.Exec(ctx, query, email); err != nil || ct.RowsAffected() == 0 {
+
+	ct, err := tx.Exec(ctx, query, email)
+	if err != nil || ct.RowsAffected() == 0 {
 		return errors.New("failed to delete user")
 	}
 
-	if err = tx.Commit(ctx); err != nil {
+	err = tx.Commit(ctx)
+	if err != nil {
 		return err
 	}
 

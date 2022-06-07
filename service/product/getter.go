@@ -51,7 +51,8 @@ func (ps *ProductService) GetAllProductsFromDb(ctx context.Context) ([]ProductRe
 		return nil, errors.New("products not found")
 	}
 
-	if err = ps.SetCacheProducts(productsResponse); err != nil {
+	err = ps.SetCacheProducts(productsResponse)
+	if err != nil {
 		return nil, err
 	}
 
@@ -82,7 +83,9 @@ func (ps *ProductService) GetAllProductsFromCache() ([]ProductResponse, error) {
 
 	// nil slice
 	var products []ProductResponse
-	if err = ffjson.Unmarshal(cache, &products); err != nil {
+
+	err = ffjson.Unmarshal(cache, &products)
+	if err != nil {
 		return nil, err
 	}
 

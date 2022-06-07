@@ -46,7 +46,7 @@ func (ph *ProductHandler) GetProductById(c echo.Context) error {
 func (ph *ProductHandler) GetAllProducts(c echo.Context) error {
 	responseFromCache, err := ph.ProductService.GetAllProductsFromCache()
 	if responseFromCache != nil || err == nil {
-		return c.JSON(http.StatusOK, utility.SuccessResponse("success get all products from cache", responseFromCache))
+		return c.JSON(http.StatusOK, utility.SuccessResponse("success get all products", responseFromCache))
 	}
 
 	responseFromDb, err := ph.ProductService.GetAllProductsFromDb(c.Request().Context())
@@ -67,7 +67,8 @@ func (ph *ProductHandler) UpdateProduct(c echo.Context) error {
 	}
 	updateProduct.Id = id
 
-	if err = ph.ProductService.UpdateProduct(c.Request().Context(), updateProduct); err != nil {
+	err = ph.ProductService.UpdateProduct(c.Request().Context(), updateProduct)
+	if err != nil {
 		return c.JSON(http.StatusInternalServerError, utility.ErrorResponse(http.StatusInternalServerError, err.Error()))
 	}
 

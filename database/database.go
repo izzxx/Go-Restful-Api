@@ -29,7 +29,8 @@ func OpenDbConnection() (*pgxpool.Pool, error) {
 		return nil, err
 	}
 
-	if err = pool.Ping(ctx); err != nil {
+	err = pool.Ping(ctx)
+	if err != nil {
 		return nil, err
 	}
 
@@ -40,7 +41,7 @@ func OpenDbConnection() (*pgxpool.Pool, error) {
 func Create(ctx context.Context) {
 	db, err := OpenDbConnection()
 	if err != nil {
-		log.Fatal(err.Error())
+		log.Fatal(err)
 	}
 
 	queryUser := `
@@ -54,7 +55,7 @@ func Create(ctx context.Context) {
 	`
 
 	if _, err = db.Exec(ctx, queryUser); err != nil {
-		log.Fatal(err.Error())
+		log.Fatal(err)
 	}
 
 	queryProduct := `
@@ -67,7 +68,8 @@ func Create(ctx context.Context) {
 		)
 	`
 
-	if _, err = db.Exec(ctx, queryProduct); err != nil {
-		log.Fatal(err.Error())
+	_, err = db.Exec(ctx, queryProduct)
+	if err != nil {
+		log.Fatal(err)
 	}
 }

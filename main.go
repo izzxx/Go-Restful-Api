@@ -30,14 +30,14 @@ func main() {
 	// Postgres
 	pgxpool, err := database.OpenDbConnection()
 	if err != nil {
-		log.Fatal(err.Error())
+		log.Fatal(err)
 	}
 	defer pgxpool.Close()
 
 	// BigCache
 	memory, err := bigcache.NewBigCache(bigcache.DefaultConfig(5 * time.Hour))
 	if err != nil {
-		log.Fatal(err.Error())
+		log.Fatal(err)
 	}
 	defer memory.Close()
 
@@ -53,6 +53,10 @@ func main() {
 		Addr:         ":" + config.ServerPort,
 		ReadTimeout:  timeout,
 		WriteTimeout: timeout,
+	}
+
+	if server.Addr == ":" {
+		server.Addr = ":9000"
 	}
 
 	// Dependency

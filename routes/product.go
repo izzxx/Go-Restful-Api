@@ -13,12 +13,12 @@ func (deps *Dependencies) Product() {
 	productHandler := handler.ProductHandler{ProductService: productService}
 
 	// Must be registered as a user
-	productForUser := deps.App.Group("/api/v1/products", middleware.AuthMiddleware)
-	productForUser.GET("", productHandler.GetAllProducts)
-	productForUser.GET("/:id", productHandler.GetProductById)
+	productAccessForUser := deps.App.Group("/api/v1/products", middleware.AuthMiddleware)
+	productAccessForUser.GET("", productHandler.GetAllProducts)
+	productAccessForUser.GET("/:id", productHandler.GetProductById)
 
 	// Must be registered as admin
-	productAccessForAdmin := productForUser.Group("/admin", middleware.IsAdmin)
+	productAccessForAdmin := productAccessForUser.Group("/admin", middleware.IsAdmin)
 	productAccessForAdmin.POST("/create", productHandler.CreateProduct)
 	productAccessForAdmin.PUT("/update/:id", productHandler.UpdateProduct)
 	productAccessForAdmin.DELETE("/delete/:id", productHandler.DeleteProduct)

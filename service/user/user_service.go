@@ -5,10 +5,10 @@ import (
 	"errors"
 	"net/mail"
 
+	"github.com/google/uuid"
 	"github.com/izzxx/Go-Restful-Api/config"
 	"github.com/izzxx/Go-Restful-Api/model/user"
 	"github.com/izzxx/Go-Restful-Api/utility"
-	"github.com/google/uuid"
 )
 
 type UserService struct {
@@ -16,6 +16,7 @@ type UserService struct {
 }
 
 func (us *UserService) Register(ctx context.Context, guestRegister UserRegister) (*UserResponse, error) {
+	// Email validation
 	_, err := mail.ParseAddress(guestRegister.Email)
 
 	switch {
@@ -35,7 +36,8 @@ func (us *UserService) Register(ctx context.Context, guestRegister UserRegister)
 		IsAdmin:  guestRegister.IsAdmin,
 	}
 
-	if err = guest.HashPassword(); err != nil {
+	err = guest.HashPassword()
+	if err != nil {
 		return nil, err
 	}
 
@@ -60,6 +62,7 @@ func (us *UserService) Register(ctx context.Context, guestRegister UserRegister)
 }
 
 func (us *UserService) Login(ctx context.Context, guestLogin UserLogin) (*UserResponse, error) {
+	// Email validation
 	_, err := mail.ParseAddress(guestLogin.Email)
 
 	switch {
@@ -74,7 +77,8 @@ func (us *UserService) Login(ctx context.Context, guestLogin UserLogin) (*UserRe
 		return nil, err
 	}
 
-	if err = user.ComparePassword(guestLogin.Password); err != nil {
+	err = user.ComparePassword(guestLogin.Password)
+	if err != nil {
 		return nil, err
 	}
 
@@ -94,6 +98,7 @@ func (us *UserService) Login(ctx context.Context, guestLogin UserLogin) (*UserRe
 }
 
 func (us *UserService) UpdatePassword(ctx context.Context, userUpdate UserUpdatePassword) error {
+	// Email validation
 	_, err := mail.ParseAddress(userUpdate.Email)
 
 	switch {
@@ -103,18 +108,31 @@ func (us *UserService) UpdatePassword(ctx context.Context, userUpdate UserUpdate
 		return config.ErrorPassword
 	case len(userUpdate.NewPassword) < 8:
 		return config.ErrorPassword
-	default:
 	}
 
-	var user = user.User{
-		Password: userUpdate.PastPassword,
-	}
-
-	if err = user.HashPassword(); err != nil {
+	user, err := us.UserRepository.GetUserByEmail(ctx, userUpdate.Email)
+	if err != nil {
 		return err
 	}
 
-	if err = us.UserRepository.UpdatePasswordUser(ctx, userUpdate.Email, user.Password, userUpdate.NewPassword); err != nil {
+	// Compare user password
+	err = user.ComparePassword(userUpdate.PastPassword)
+	if err != nil {
+		return err
+	}
+
+	// Reset old password with new password
+	user.Password = userUpdate.NewPassword
+
+	// Hash new password
+	err = user.HashPassword()
+	if err != nil {
+		return err
+	}
+
+	// Change old password to new password
+	err = us.UserRepository.UpdatePasswordUser(ctx, userUpdate.Email, user.Password)
+	if err != nil {
 		return err
 	}
 

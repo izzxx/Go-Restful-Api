@@ -80,7 +80,9 @@ func (ps *ProductService) DeleteProductById(ctx context.Context, id string) erro
 		return err
 	}
 
+	// Delete cache products
 	_ = ps.Memory.Delete("products")
+
 	return nil
 }
 
@@ -95,7 +97,8 @@ func (ps *ProductService) SetCacheProducts(products []ProductResponse) error {
 		return err
 	}
 
-	if err = ps.Memory.Set("products", cacheProducts); err != nil {
+	err = ps.Memory.Set("products", cacheProducts)
+	if err != nil {
 		return err
 	}
 

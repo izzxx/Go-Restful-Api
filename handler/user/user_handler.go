@@ -57,7 +57,8 @@ func (uh *UserHandler) UpdatePassword(c echo.Context) error {
 		return c.JSON(http.StatusBadRequest, utility.ErrorResponse(http.StatusBadRequest, err.Error()))
 	}
 
-	if err = uh.UserService.UpdatePassword(c.Request().Context(), userUpdatePassword); err != nil {
+	err = uh.UserService.UpdatePassword(c.Request().Context(), userUpdatePassword)
+	if err != nil {
 		return c.JSON(http.StatusInternalServerError, utility.ErrorResponse(http.StatusInternalServerError, err.Error()))
 	}
 

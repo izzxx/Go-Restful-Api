@@ -10,7 +10,8 @@ func ExtractToken(token string) (string, error) {
 		return "", errors.New("token not found")
 	}
 
-	if match := strings.Contains(token, "Bearer "); !match {
+	match := strings.Contains(token, "Bearer ")
+	if !match {
 		return "", errors.New("wrong format token")
 	}
 
