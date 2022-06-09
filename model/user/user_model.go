@@ -39,9 +39,7 @@ func (ur *UserRepository) CreateUser(ctx context.Context, user User) (string, er
 	}
 	defer tx.Rollback(ctx)
 
-	query := `INSERT INTO users(id, name, email, password, isadmin) VALUES($1, $2, $3, $4, $5) RETURNING id`
-
-	err = tx.QueryRow(ctx, query, user.Id, user.Name, user.Email, user.Password, user.IsAdmin).Scan(&user.Id)
+	err = tx.QueryRow(ctx, "INSERT INTO users(id, name, email, password, isadmin) VALUES($1, $2, $3, $4, $5) RETURNING id", user.Id, user.Name, user.Email, user.Password, user.IsAdmin).Scan(&user.Id)
 	if err != nil {
 		return "", err
 	}
@@ -69,9 +67,7 @@ func (ur *UserRepository) GetUserByEmail(ctx context.Context, email string) (*Us
 
 	var usr User
 
-	query := `SELECT id, name, email, password, isadmin FROM users WHERE email = $1`
-
-	err = tx.QueryRow(ctx, query, email).Scan(&usr.Id, &usr.Name, &usr.Email, &usr.Password, &usr.IsAdmin)
+	err = tx.QueryRow(ctx, "SELECT id, name, email, password, isadmin FROM users WHERE email = $1", email).Scan(&usr.Id, &usr.Name, &usr.Email, &usr.Password, &usr.IsAdmin)
 	if err != nil {
 		return nil, err
 	}
@@ -97,9 +93,7 @@ func (ur *UserRepository) UpdatePasswordUser(ctx context.Context, email, newPass
 	}
 	defer tx.Rollback(ctx)
 
-	query := `UPDATE users SET password = $1 WHERE email = $2`
-
-	ct, err := tx.Exec(ctx, query, newPassword, email)
+	ct, err := tx.Exec(ctx, "UPDATE users SET password = $1 WHERE email = $2", newPassword, email)
 	if err != nil || ct.RowsAffected() == 0 {
 		return errors.New("failed to update user")
 	}
@@ -125,9 +119,7 @@ func (ur *UserRepository) DeleteUser(ctx context.Context, email string) error {
 	}
 	defer tx.Rollback(ctx)
 
-	query := `DELETE FROM users WHERE email = $1`
-
-	ct, err := tx.Exec(ctx, query, email)
+	ct, err := tx.Exec(ctx, "DELETE FROM users WHERE email = $1", email)
 	if err != nil || ct.RowsAffected() == 0 {
 		return errors.New("failed to delete user")
 	}

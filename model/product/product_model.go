@@ -24,9 +24,7 @@ func (pm *ProductModel) CreateProduct(ctx context.Context, prod Product) error {
 	}
 	defer tx.Rollback(ctx)
 
-	query := "INSERT INTO products(id, name, price, quantity) VALUES($1, $2, $3, $4)"
-
-	_, err = tx.Exec(ctx, query, prod.Id, prod.Name, prod.Price, prod.Quantity)
+	_, err = tx.Exec(ctx, "INSERT INTO products(id, name, price, quantity) VALUES($1, $2, $3, $4)", prod.Id, prod.Name, prod.Price, prod.Quantity)
 	if err != nil {
 		return err
 	}
@@ -54,9 +52,14 @@ func (pm *ProductModel) FindById(ctx context.Context, id string) (*Product, erro
 
 	var product Product
 
-	query := "SELECT id, name, price, quantity, created_at FROM products WHERE id = $1"
+	err = tx.QueryRow(ctx, "SELECT id, name, price, quantity, created_at FROM products WHERE id = $1", id).Scan(
+		&product.Id,
+		&product.Name,
+		&product.Price,
+		&product.Quantity,
+		&product.Created_At,
+	)
 
-	err = tx.QueryRow(ctx, query, id).Scan(&product.Id, &product.Name, &product.Price, &product.Quantity, &product.Created_At)
 	if err != nil {
 		return nil, err
 	}
@@ -85,9 +88,7 @@ func (pm *ProductModel) FindAllProduct(ctx context.Context) ([]Product, error) {
 	// nil slice
 	var products []Product
 
-	query := "SELECT id, name, price, quantity, created_at FROM products ORDER BY name ASC"
-
-	rows, err := tx.Query(ctx, query)
+	rows, err := tx.Query(ctx, "SELECT id, name, price, quantity, created_at FROM products ORDER BY name ASC")
 	if err != nil {
 		return nil, err
 	}
@@ -124,9 +125,7 @@ func (pm *ProductModel) UpdateProduct(ctx context.Context, prod Product) error {
 	}
 	defer tx.Rollback(ctx)
 
-	query := "UPDATE products SET name = $1, price = $2, quantity = $3 WHERE id = $4"
-
-	ct, err := tx.Exec(ctx, query, &prod.Name, &prod.Price, &prod.Quantity, &prod.Id)
+	ct, err := tx.Exec(ctx, "UPDATE products SET name = $1, price = $2, quantity = $3 WHERE id = $4", &prod.Name, &prod.Price, &prod.Quantity, &prod.Id)
 	if err != nil || ct.RowsAffected() == 0 {
 		return errors.New("failed to update product")
 	}
@@ -152,9 +151,7 @@ func (pm *ProductModel) DeleteProduct(ctx context.Context, id string) error {
 	}
 	defer tx.Rollback(ctx)
 
-	query := "DELETE FROM products WHERE id = $1"
-
-	ct, err := tx.Exec(ctx, query, id)
+	ct, err := tx.Exec(ctx, "DELETE FROM products WHERE id = $1", id)
 	if err != nil || ct.RowsAffected() == 0 {
 		return errors.New("product not found")
 	}
