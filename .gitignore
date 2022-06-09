@@ -1,1 +1,5 @@
+# Binary program
+*.exe
+
+# Environtment variable
 .env
